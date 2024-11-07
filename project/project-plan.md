@@ -17,7 +17,7 @@ The impact of air pollution, specifically fine particulate matter (PM2.5), on pu
    - **Data Type**: CSV
    - **Description**: This dataset provides statistics on hospital admissions related to respiratory diseases. It includes hospitalization data by region, which can be correlated with air quality data to understand health trends.
 
-2. ** Daily Mean PM2.5 Concentration and the AQI level**
+2. **Daily Mean PM2.5 Concentration and the AQI level**
    - **Datasource Name**: EPA United States Environmental Protection Agency
    - **Metadata URL**: (https://www.epa.gov/outdoor-air-quality-data/download-daily-data)
    - **Data URL**: [CDC Respiratory Disease Data](https://www3.epa.gov/cgi-bin/broker?_service=data&_server=134.67.99.91&_port=4072&_sessionid=cBmqwRlTS52&_PROGRAM=dataprog.ad_viz_plotval_getdata.sas)
