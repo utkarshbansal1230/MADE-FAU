@@ -1,0 +1,134 @@
+pipeline treesPipeline{
+
+
+ treesExtractor
+    -> treesXlsxInterpreter; 
+
+treeExtractor
+    -> treeXlsxInterpreter;
+
+treesXlsxInterpreter
+    -> AgencySheetPicker
+    -> NameHeaderWriter
+    -> HeaderSequenceWriter
+    -> CarsCoreDataSelector
+    -> CarsTableInterpreter
+    -> treesLoader;
+
+treeXlsxInterpreter
+    -> agencySheetPicker
+    -> nameHeaderWriter
+    -> headerSequenceWriter
+    -> carsCoreDataSelector
+    -> carsTableInterpreter
+    -> treeLoader;
+
+block treesExtractor oftype HttpExtractor {
+
+    url: "https://thedocs.worldbank.org/en/doc/7d852628d96b9411d43e5d36d5dff941-0050062022/original/Graphs-Chapter-5-02082022.xlsx";
+  }
+
+block treeExtractor oftype HttpExtractor {
+
+    url: "https://thedocs.worldbank.org/en/doc/7d852628d96b9411d43e5d36d5dff941-0050062022/original/Graphs-Chapter-5-02082022.xlsx";
+  }
+
+block treesXlsxInterpreter  oftype XLSXInterpreter { }
+
+block treeXlsxInterpreter  oftype XLSXInterpreter { }
+
+
+ block AgencySheetPicker oftype SheetPicker {
+   sheetName: "Figure S5.1.2";
+ }
+
+block agencySheetPicker oftype SheetPicker {
+   sheetName: "Figure S5.1.2";
+ }
+
+  block NameHeaderWriter oftype CellWriter {
+   at: cell P2;
+   write: ["Country Code"];
+ }
+
+ block nameHeaderWriter oftype CellWriter {
+   at: cell P2;
+   write: ["Country Code"];
+ }
+
+
+  block HeaderSequenceWriter oftype CellWriter {
+   at: range R2:S2;
+   write: ["GDP per Capita", "Bond Issuance Share"];
+ }
+
+ block headerSequenceWriter oftype CellWriter {
+   at: range R2:S2;
+   write: ["GDP per Capita", "Bond Issuance Share"];
+ }
+
+  block CarsCoreDataSelector oftype CellRangeSelector {
+   select: range P2:S45;
+ }
+
+ block carsCoreDataSelector oftype CellRangeSelector {
+   select: range P2:S45;
+ }
+
+   
+  block CarsTableInterpreter oftype TableInterpreter {
+   header: true;
+   columns: [
+     "Country Code" oftype utkarsh,
+     "Bond Issuance Share" oftype utkarshd,
+   ];
+ }
+
+ block carsTableInterpreter oftype TableInterpreter {
+   header: true;
+   columns: [
+     "Country Code" oftype utkarsh,
+     "GDP per Capita" oftype utkarshid,
+   ];
+ }
+
+ block treesLoader oftype SQLiteLoader{
+    table: "bondIssuance";
+    file: "./country-stats.sqlite";
+    dropTable: false;
+}
+
+block treeLoader oftype SQLiteLoader{
+    table: "gdpPerCapita";
+    file: "./country-stats.sqlite";
+    dropTable: false;
+}
+
+}
+
+valuetype utkarsh oftype text {
+    constraints: [ allowed ];
+}
+
+ constraint allowed oftype RegexConstraint {
+   regex: /^[A-Z]{3}$/;
+}
+
+valuetype utkarshid oftype text{
+    constraints : [ allow ];
+}
+
+constraint allow oftype RegexConstraint{
+    regex: /^\d+(\.\d+)?$/;
+
+}
+
+valuetype utkarshd oftype text{
+    constraints : [ alloww ];
+}
+
+constraint alloww oftype RegexConstraint{
+    regex: /^0(\.\d+)?|1(\.0+)?$/;
+
+
+}
