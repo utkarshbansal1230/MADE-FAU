@@ -118,8 +118,8 @@ valuetype utkarshid oftype decimal{
     constraints : [ allow ];
 }
 
-constraint allow oftype RegexConstraint{
-    regex: /^\d+(\.\d+)?$/;
+constraint allow oftype RangeConstraint{
+    lowerBound: 0;
 
 }
 
@@ -127,8 +127,9 @@ valuetype utkarshd oftype decimal{
     constraints : [ alloww ];
 }
 
-constraint alloww oftype RegexConstraint{
-    regex: /^0(\.\d+)?|1(\.0+)?$/;
+constraint alloww oftype RangeConstraint{
+    lowerBound:  0;
+    upperBound:  1;
 
 
 }
