@@ -1,0 +1,85 @@
+pipeline TemperaturePipeline {
+
+  DownloadData
+    -> UnzipArchive
+    -> SelectAgencyFile
+    -> ParseFileText
+    -> InterpretTemperaturesCSV
+    -> UpdateHeaders
+    -> UpdateLastHeader
+    -> InterpretTemperaturesTable
+    -> ConvertBatteryTempToFahrenheit
+    -> ConvertTempToFahrenheit
+    -> LoadTemperaturesToDB;
+
+  block DownloadData oftype HttpExtractor {
+    url: "https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip";
+  }
+
+  block UnzipArchive oftype ArchiveInterpreter {
+    archiveType: "zip";
+  }
+
+  block SelectAgencyFile oftype FilePicker {
+    path: "./data.csv";
+  }
+
+  block ParseFileText oftype TextFileInterpreter {}
+
+  block InterpretTemperaturesCSV oftype CSVInterpreter {
+    delimiter: ';';
+  }
+
+  block UpdateHeaders oftype CellWriter {
+    at: range A1:E1;
+    write: ["id", "producer", "model", "month", "temperature"];
+  }
+
+  block UpdateLastHeader oftype CellWriter {
+    at: cell J1;
+    write: ["battery_temperature"];
+  }
+
+  block InterpretTemperaturesTable oftype TableInterpreter {
+    header: true;
+    columns: [
+      "id" oftype proofID,
+      "producer" oftype text,
+      "model" oftype text,
+      "month" oftype integer,
+      "temperature" oftype decimal,
+      "battery_temperature" oftype decimal
+    ];
+  }
+
+  valuetype proofID oftype integer {
+    constraints: [Constraint_ID];
+  }
+
+  constraint Constraint_ID on integer:
+    value > 0;
+
+  block ConvertBatteryTempToFahrenheit oftype TableTransformer {
+    inputColumns: ["battery_temperature"];
+    outputColumn: "battery_temperature";
+    uses: CelsiusToFahrenheit;
+  }
+
+  block ConvertTempToFahrenheit oftype TableTransformer {
+    inputColumns: ["temperature"];
+    outputColumn: "temperature";
+    uses: CelsiusToFahrenheit;
+  }
+
+  transform CelsiusToFahrenheit {
+  from tempCelsius oftype decimal;
+  to tempFahrenheit oftype decimal;
+
+  tempFahrenheit: (tempCelsius * 9/5) + 32;
+}
+
+  block LoadTemperaturesToDB oftype SQLiteLoader {
+    table: "temperatures";
+    file: "./temperatures.sqlite";
+  }
+}
