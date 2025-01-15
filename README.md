@@ -1,37 +1,50 @@
-# Methods of Advanced Data Engineering Template Project
+# Impact of PM2.5 Concentration on Respiratory Hospitalizations in New York City
 
-This template project provides some structure for your open data project in the MADE module at FAU.
-This repository contains (a) a data science project that is developed by the student over the course of the semester, and (b) the exercises that are submitted over the course of the semester.
+## Overview
+This project explores the relationship between PM2.5 concentrations in the atmosphere and respiratory hospitalizations across neighborhoods in New York City. By combining air quality data with hospitalization records, the study aims to identify trends, assess the impact of air pollution on public health, and uncover disparities that require targeted interventions. The findings emphasize the importance of addressing environmental and systemic factors to improve respiratory health outcomes.
 
-To get started, please follow these steps:
-1. Create your own fork of this repository. Feel free to rename the repository right after creation, before you let the teaching instructors know your repository URL. **Do not rename the repository during the semester**.
+## Datasets Used
 
-## Project Work
-Your data engineering project will run alongside lectures during the semester. We will ask you to regularly submit project work as milestones, so you can reasonably pace your work. All project work submissions **must** be placed in the `project` folder.
+### 1. Air Quality Data
+- **Source:** NYC Open Data
+- **URL:** [Air Quality Data](https://data.cityofnewyork.us/Environment/Air-Quality/c3uy-2p5r/)
+- **Description:** Provides detailed measurements of PM2.5 levels across various locations in New York City, disaggregated by UHF-42, time period, and pollutant type.
+- **Format:** CSV
+- **Quality:** Verified for consistency and cleaned for analysis.
+- **Licensing:** Publicly accessible for research and analysis. Attribution to the NYC Department of Health and Mental Hygiene is required. Details available [here](https://opendata.cityofnewyork.us/overview/).
 
-### Exporting a Jupyter Notebook
-Jupyter Notebooks can be exported using `nbconvert` (`pip install nbconvert`). For example, to export the example notebook to HTML: `jupyter nbconvert --to html examples/final-report-example.ipynb --embed-images --output final-report.html`
+### 2. Hospitalization Data
+- **Source:** NYC Environmental Public Health Data Explorer
+- **URL:** [Hospitalization Data](https://a816-dohbesp.nyc.gov/IndicatorPublic/data-explorer/health-impacts-of-air-pollution/?id=2119#display=summary)
+- **Description:** Contains data on hospitalizations caused by air pollution, including PM2.5 exposure, categorized by UHF-42 neighborhoods and time periods.
+- **Format:** Structured for demographic and temporal analysis.
+- **Licensing:** Licensed under Apache License Version 2.0. Details available [here](https://github.com/nychealth/EH-dataportal?tab=Apache-2.0-1-ov-file).
 
+## Methodology
 
-## Exercises
-During the semester you will need to complete exercises using [Jayvee](https://github.com/jvalue/jayvee). You **must** place your submission in the `exercises` folder in your repository and name them according to their number from one to five: `exercise<number from 1-5>.jv`.
+### 1. Data Cleaning and Preparation
+- **Air Quality Data:** 
+  - Removed missing values and irrelevant columns (e.g., “messages”).
+  - Retained only PM2.5 data and stored the cleaned dataset in a database.
+- **Hospitalization Data:**
+  - Already pre-cleaned; stored directly in the database.
 
-In regular intervals, exercises will be given as homework to complete during the semester. Details and deadlines will be discussed in the lecture, also see the [course schedule](https://made.uni1.de/).
+### 2. Aggregation and Joining
+- Aggregated air quality data into multi-year time periods (e.g., 2009–2011) to align with hospitalization data.
+- Calculated PM2.5 averages for each UHF-42 region.
+- Joined air quality and hospitalization datasets using UHF-42 regions and time periods as keys.
 
-### Exercise Feedback
-We provide automated exercise feedback using a GitHub action (that is defined in `.github/workflows/exercise-feedback.yml`). 
+## Key Insights
+- **Decline in Hospitalizations:** Significant reduction in respiratory hospitalizations over time, primarily driven by decreased PM2.5 levels.
+- **Disparities:** Cluster analysis revealed neighborhoods with high pollution but low hospitalization rates, suggesting gaps in healthcare access or underreporting.
+- **Unexplained Variation:** With an \(R^2 = 0.29\), the relationship between PM2.5 and hospitalizations is only partially explained by air pollution, indicating a need to consider additional factors like demographics, healthcare infrastructure, and pre-existing conditions.
 
-To view your exercise feedback, navigate to Actions → Exercise Feedback in your repository.
+## Future Work
+- Investigate additional variables influencing respiratory hospitalizations, such as age distribution, socioeconomic status, and healthcare access.
+- Develop targeted interventions for neighborhoods with identified disparities.
+- Explore the long-term effects of sustained air quality improvements on public health.
 
-The exercise feedback is executed whenever you make a change in files in the `exercise` folder and push your local changes to the repository on GitHub. To see the feedback, open the latest GitHub Action run, open the `exercise-feedback` job and `Exercise Feedback` step. You should see command line output that contains output like this:
-
-```sh
-Found exercises/exercise1.jv, executing model...
-Found output file airports.sqlite, grading...
-Grading Exercise 1
-	Overall points 17 of 17
-	---
-	By category:
-		Shape: 4 of 4
-		Types: 13 of 13
-```
+## Licensing and Attribution
+- This study utilizes publicly available datasets licensed under respective agreements.
+- Air Quality Data: NYC Open Data ([License Details](https://opendata.cityofnewyork.us/overview/)).
+- Hospitalization Data: NYC Environmental Public Health Data Explorer ([License Details](https://github.com/nychealth/EH-dataportal?tab=Apache-2.0-1-ov-file)).
