@@ -16,7 +16,7 @@ fi
 
 # Execute the pipeline
 echo "Executing the data pipeline..."
-python3 python_file.py
+python3 pipeline.py
 
 # Validate the output
 if [ -f "$DB_FILE" ]; then
