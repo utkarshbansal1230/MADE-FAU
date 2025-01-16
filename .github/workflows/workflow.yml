@@ -1,0 +1,36 @@
+name: CI for Project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set Up Environment
+        run: |
+          chmod +x tests.sh
+
+      - name: Run Tests
+        run: ./tests.sh
+        env:
+          EXTERNAL_API_KEY: ${{ secrets.EXTERNAL_API_KEY }} # Example of using CI secrets
+
+      - name: Handle Mocks (Optional)
+        if: ${{ always() }}
+        run: |
+          echo "Mocking data for testing to avoid external dependencies or expensive operations."
+          # Add commands to configure or use mocks here
+
+      - name: Skip Tests (Optional Fallback)
+        if: ${{ always() }}
+        run: |
+          echo "Tests are commented out due to cost or external data requirements."
+          # Uncomment this to skip actual test execution if necessary
+          # echo "Skipping tests in CI due to limitations."
