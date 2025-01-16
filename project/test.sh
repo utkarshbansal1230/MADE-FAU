@@ -6,4 +6,4 @@ set -e
 echo "Running test_pipeline.sh"
 bash test_pipeline.sh
 
-echo "MADE IST EINFACH"
+echo "Alles gut"
